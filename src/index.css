@@ -60,11 +60,14 @@ button{
   background-color: rgba(36, 98, 123, 0.945);
 }
 
-input[type="text"]{
+input[type="text"],
+input[type="time"]{
   font-size: 1.6rem;
   padding: 10px;
   border: 2px solid;
   border-radius: 5px;
+  height: 50px;
+  box-sizing: border-box;
 }
 
 ol{
@@ -96,4 +99,8 @@ li{
   margin-right: 15px;
   width: 30px;
   text-align: right;
+}
+
+.task-time{
+  margin-right: 15px;
 }
