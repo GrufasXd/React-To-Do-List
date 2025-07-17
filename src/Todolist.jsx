@@ -18,7 +18,8 @@ function Todolist(){
         if(newTask.trim() !== "" && timeOfTask !== ""){
             const taskObj = {
                 time: timeOfTask,
-                text: newTask
+                text: newTask,
+                completed: false
             }
             const updatedTasks = [...tasks, taskObj];
 
@@ -29,9 +30,9 @@ function Todolist(){
                             const temp = updatedTasks[j];
                             updatedTasks[j] = updatedTasks[j + 1];
                             updatedTasks[j + 1] = temp;
+                        }
+                    }
                 }
-            }
-        }
             }
 
             setTasks(updatedTasks)
@@ -49,8 +50,9 @@ function Todolist(){
     function moveUp(index){
         if(index > 0){
             const updatedTasks = [...tasks];
-            [updatedTasks[index], updatedTasks[index-1]] = 
-            [updatedTasks[index-1], updatedTasks[index]];
+            const temp = updatedTasks[index].text;
+            updatedTasks[index].text = updatedTasks[index-1].text;
+            updatedTasks[index-1].text = temp;
             setTasks(updatedTasks);
         }
     }
@@ -58,10 +60,17 @@ function Todolist(){
     function moveDown(index){
         if(index < tasks.length - 1){
             const updatedTasks = [...tasks];
-            [updatedTasks[index], updatedTasks[index+1]] = 
-            [updatedTasks[index+1], updatedTasks[index]];
+            const temp = updatedTasks[index].text;
+            updatedTasks[index].text = updatedTasks[index+1].text;
+            updatedTasks[index+1].text = temp;
             setTasks(updatedTasks);
         }
+    }
+
+    function togglecomplete(index){
+        const updatedTasks = [...tasks];
+        updatedTasks[index].completed = !updatedTasks[index].completed;
+        setTasks(updatedTasks);
     }
 
 
@@ -89,9 +98,13 @@ function Todolist(){
         <ol>
             {tasks.map((task, index) =>
                 <li key = {index}>
+                    {task.completed && <span className="checkmark">✓</span>}
                     <span className="task-number">{index + 1}.</span>
                     <span className="task-time">{task.time}</span>
-                    <span className="text">{task.text}</span>
+                    <span onClick={() => togglecomplete(index)}
+                    className={`task-text ${task.completed ? "completed" : ""}`}>
+                        {task.text}
+                    </span>
                     <button
                     className="delete-button"
                     onClick= {() => deleteTask(index)}>
