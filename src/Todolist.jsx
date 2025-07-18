@@ -6,6 +6,10 @@ function Todolist(){
     const[tasks, setTasks] = useState([]);
     const [newTask, setNewTask] = useState("");
     const [timeOfTask, setTimeOfTask] = useState("");
+    const [editIndex, setEditIndex] = useState(null);
+    const [editText, setEditText] = useState("");
+    const [editTime, setEditTime] = useState("");
+
 
     function letwritetask(event){
         setNewTask(event.target.value)
@@ -73,6 +77,20 @@ function Todolist(){
         setTasks(updatedTasks);
     }
 
+    function startEditing(index){
+        setEditIndex(index);
+        setEditText(tasks[index].text);
+        setEditTime(tasks[index].time);
+    }
+
+    function saveEdit(index){
+        const updatedTasks = [...tasks];
+        updatedTasks[index].text = editText;
+        updatedTasks[index].time = editTime;
+        setTasks(updatedTasks);
+        setEditIndex(null);
+    }
+
 
     return(
     <div className="todolist">
@@ -100,11 +118,39 @@ function Todolist(){
                 <li key = {index}>
                     {task.completed && <span className="checkmark">✓</span>}
                     <span className="task-number">{index + 1}.</span>
-                    <span className="task-time">{task.time}</span>
-                    <span onClick={() => togglecomplete(index)}
-                    className={`task-text ${task.completed ? "completed" : ""}`}>
-                        {task.text}
-                    </span>
+                    {editIndex === index ?(
+                        <>
+                        <input
+                            type="time"
+                            value={editTime}
+                            onChange={(e) => setEditTime(e.target.value)}
+                            className="task-edit-time"
+                        />
+                        <input
+                            type = "text"
+                            value = {editText}
+                            onChange={(e) => setEditText(e.target.value)}
+                            onBlur={() => saveEdit(index)}
+                            onKeyDown={(e) => {
+                                if(e.key === "Enter"){
+                                    saveEdit(index)
+                                }
+                            }}
+                            className="task-edit-input"
+                            />
+                            </>
+                        ) : (
+                            <>
+                            <span className="task-time">{task.time}</span>
+                            <span
+                            onClick={() => togglecomplete(index)}
+                            onDoubleClick={() => startEditing(index)}
+                            className={`task-text ${task.completed ? "completed" : ""}`}
+                            >
+                                {task.text}
+                            </span>
+                            </>
+                        )}
                     <button
                     className="delete-button"
                     onClick= {() => deleteTask(index)}>
